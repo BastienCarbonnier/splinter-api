@@ -2,6 +2,7 @@ package com.splinter.engine.merger
 
 import com.splinter.model.JsonFile
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import org.junit.Test
 import kotlin.properties.Delegates
@@ -34,7 +35,7 @@ class MergerTest {
     @Test
     fun testGetDuplicateKeys() {
         val duplicateKeys = findExistingKeysBetweenTwoFiles(jsonFile1, jsonFile1)
-        assertEquals(duplicateKeys, mapOf(Pair("var_1", "en_NL.i18n"), Pair("var_2", "test value")))
+        assertEquals(duplicateKeys, mapOf(Pair("var_1", JsonPrimitive("en_NL.i18n")), Pair("var_2", JsonPrimitive("test value"))))
     }
 
     @Test
@@ -47,5 +48,11 @@ class MergerTest {
     fun getDuplicateKeysOneElementInCommon() {
         val duplicateKeys = findExistingKeysBetweenTwoFiles(jsonFile1, jsonFileOneInCommonWith1)
         assertEquals(duplicateKeys.size, 1)
+    }
+
+    @Test
+    fun findDuplicateElementInListOfFiles() {
+        val duplicateKeys = findDuplicateKeysBetweenFiles(listOf(jsonFile1, jsonFile1))
+        assertEquals(duplicateKeys.size, 2)
     }
 }

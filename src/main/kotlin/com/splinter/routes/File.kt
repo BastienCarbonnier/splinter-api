@@ -1,6 +1,7 @@
+import com.splinter.engine.merger.constructResponseFile
+import com.splinter.engine.merger.findDuplicateKeysBetweenFiles
 import com.splinter.engine.parser.decodeJsonFileFromString
-import com.splinter.model.JsonFile
-import io.ktor.http.*
+import com.splinter.model.PostRequest
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -15,8 +16,10 @@ fun Route.getResultingFile() {
 
 fun Route.getDuplicateKeyFromFiles() {
     post("/file") {
-        val jsonFile = call.receive<List<JsonFile>>()
-        println(jsonFile)
-        call.respondText("Json file received", status = HttpStatusCode.Created)
+        val data = call.receive<PostRequest>()
+        val responseMap = findDuplicateKeysBetweenFiles(data.data)
+        val responseJson = constructResponseFile("results.json", responseMap)
+
+        call.respond(responseJson)
     }
 }
