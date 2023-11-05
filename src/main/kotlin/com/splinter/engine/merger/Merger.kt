@@ -26,6 +26,6 @@ fun findExistingKeysBetweenTwoFiles(file1: JsonFile, file2: JsonFile): Map<Strin
     return sameKeyAndValue
 }
 
-fun constructResponseFile(name: String, map: Map<String, JsonElement>): JsonFile {
-    return JsonFile(name, JsonObject(map))
+fun constructResponseFile(id: String, name: String, map: Map<String, JsonElement>): JsonFile {
+    return JsonFile(id, name, JsonObject(map))
 }

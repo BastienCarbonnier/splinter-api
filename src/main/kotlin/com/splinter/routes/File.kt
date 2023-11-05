@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.util.*
 
 fun Route.getResultingFile() {
     get("/") {
@@ -18,7 +19,7 @@ fun Route.getDuplicateKeyFromFiles() {
     post("/file") {
         val data = call.receive<PostRequest>()
         val responseMap = findDuplicateKeysBetweenFiles(data.data)
-        val responseJson = constructResponseFile("results.json", responseMap)
+        val responseJson = constructResponseFile(UUID.randomUUID().toString(),"results.json", responseMap)
 
         call.respond(responseJson)
     }
