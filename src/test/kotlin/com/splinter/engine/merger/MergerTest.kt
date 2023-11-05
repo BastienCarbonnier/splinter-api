@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import org.junit.Test
+import java.util.*
 import kotlin.properties.Delegates
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
@@ -20,16 +21,16 @@ class MergerTest {
     fun setup() {
         val jsonString1 = "{\"var_1\": \"en_NL.i18n\", \"var_2\":\"test value\"}"
         val jsonObject1 = Json.parseToJsonElement(jsonString1).jsonObject
-        jsonFile1 = JsonFile("test1", jsonObject1)
+        jsonFile1 = JsonFile(UUID.randomUUID(),"test1", jsonObject1)
 
         val jsonString2 = "{\"var_3\": \"en_NL.i18n\", \"var_4\":\"test value\"}"
         val jsonObject2 = Json.parseToJsonElement(jsonString2).jsonObject
-        jsonFileTotallyDifferentFrom1 = JsonFile("test1", jsonObject2)
+        jsonFileTotallyDifferentFrom1 = JsonFile(UUID.randomUUID(),"test1", jsonObject2)
 
 
         val jsonString3 = "{\"var_1\": \"en_NL.i18n\", \"var_4\":\"test value\"}"
         val jsonObject3 = Json.parseToJsonElement(jsonString3).jsonObject
-        jsonFileOneInCommonWith1 = JsonFile("test1", jsonObject3)
+        jsonFileOneInCommonWith1 = JsonFile(UUID.randomUUID(),   "test1", jsonObject3)
     }
 
     @Test

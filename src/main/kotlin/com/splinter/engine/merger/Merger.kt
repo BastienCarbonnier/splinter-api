@@ -2,6 +2,7 @@ package com.splinter.engine.merger
 
 import com.splinter.model.JsonFile
 import kotlinx.serialization.json.*
+import java.util.UUID
 
 fun findDuplicateKeysBetweenFiles(jsonFiles: List<JsonFile>): Map<String, JsonPrimitive> {
     var sameKeyAndValue = emptyMap<String, JsonPrimitive>()
@@ -26,6 +27,6 @@ fun findExistingKeysBetweenTwoFiles(file1: JsonFile, file2: JsonFile): Map<Strin
     return sameKeyAndValue
 }
 
-fun constructResponseFile(id: String, name: String, map: Map<String, JsonElement>): JsonFile {
+fun constructResponseFile(id: UUID, name: String, map: Map<String, JsonElement>): JsonFile {
     return JsonFile(id, name, JsonObject(map))
 }
