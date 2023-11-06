@@ -4,27 +4,31 @@ import com.splinter.model.JsonFile
 import kotlinx.serialization.json.*
 import java.util.UUID
 
-fun findDuplicateKeysBetweenFiles(jsonFiles: List<JsonFile>): Map<String, JsonPrimitive> {
-    var sameKeyAndValue = emptyMap<String, JsonPrimitive>()
+fun findDuplicateKeysBetweenFiles(jsonFiles: List<JsonFile>): Map<String, JsonElement> {
+    val duplicateKeyAndValue = mutableMapOf<String, JsonElement>()
     for (i in 0..<jsonFiles.size-1) {
-        sameKeyAndValue = sameKeyAndValue.plus(findExistingKeysBetweenTwoFiles(jsonFiles[i], jsonFiles[i+1]))
+        findExistingKeysBetweenTwoFiles(jsonFiles[i], jsonFiles[i+1], duplicateKeyAndValue)
     }
-    return sameKeyAndValue
+    return duplicateKeyAndValue.toMap()
 }
 
-fun findExistingKeysBetweenTwoFiles(file1: JsonFile, file2: JsonFile): Map<String, JsonPrimitive> {
+fun findExistingKeysBetweenTwoFiles(
+    file1: JsonFile,
+    file2: JsonFile,
+    duplicateKeyAndValue: MutableMap<String, JsonElement>
+) {
     val duplicateKeys = file1.json.keys.intersect(file2.json.keys)
-    var sameKeyAndValue = emptyMap<String, JsonPrimitive>()
-    duplicateKeys.forEach {
-        val value1 = file1.json[it]
-        val value2 = file2.json[it]
-        if (value1 != null && value2 != null) {
-            val valueFile1 = Json.decodeFromJsonElement<String>(value1)
-            val valueFile2 = Json.decodeFromJsonElement<String>(value2)
-            if (valueFile1 == valueFile2) sameKeyAndValue = sameKeyAndValue.plus(Pair(it, JsonPrimitive(valueFile1)))
+    duplicateKeyAndValue.forEach { (key, value) ->
+        if (!file2.json.contains(key) || file2.json[key] != value) {
+            duplicateKeyAndValue.remove(key)
         }
     }
-    return sameKeyAndValue
+    duplicateKeys.forEach {
+        file1.json[it]?.let { value1 ->
+            val value2 = file2.json[it]
+            if (value1 == value2) duplicateKeyAndValue[it] = value1
+        }
+    }
 }
 
 fun constructResponseFile(id: UUID, name: String, map: Map<String, JsonElement>): JsonFile {
