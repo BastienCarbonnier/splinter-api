@@ -2,7 +2,7 @@
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
-
+val kmongo_version: String by project
 plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.serialization") version "1.9.20"
@@ -35,4 +35,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
+    // implementation("io.ktor:ktor-server-netty:$ktor_version")
+    // implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+    // implementation("org.litote.kmongo:kmongo-coroutine:$kmongo_version")
 }
