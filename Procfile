@@ -1,0 +1,1 @@
+web: ./build/install/splinter-api/bin/splinter-api

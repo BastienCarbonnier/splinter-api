@@ -39,3 +39,7 @@ dependencies {
     // implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     // implementation("org.litote.kmongo:kmongo-coroutine:$kmongo_version")
 }
+
+tasks {
+    create("stage").dependsOn("installDist")
+}
