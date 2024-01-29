@@ -37,21 +37,21 @@ class MergerTest {
     @Test
     fun testGetDuplicateKeys() {
         val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFile1, duplicateKeys)
+        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFile1, duplicateKeys, true)
         assertEquals(duplicateKeys, mutableMapOf<String, JsonElement>(Pair("var_1", JsonPrimitive("en_NL.i18n")), Pair("var_2", JsonPrimitive("test value"))))
     }
 
     @Test
     fun getDuplicateKeysAny() {
         val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFileTotallyDifferentFrom1, duplicateKeys)
+        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFileTotallyDifferentFrom1, duplicateKeys, true)
         assertEquals(duplicateKeys, emptyMap())
     }
 
     @Test
     fun getDuplicateKeysOneElementInCommon() {
         val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFileOneInCommonWith1, duplicateKeys)
+        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFileOneInCommonWith1, duplicateKeys, true)
         assertEquals(duplicateKeys.size, 1)
     }
 
