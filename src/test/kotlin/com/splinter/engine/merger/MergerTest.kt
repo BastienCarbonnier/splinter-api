@@ -47,22 +47,19 @@ class MergerTest {
 
     @Test
     fun testGetDuplicateKeys() {
-        val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile1, duplicateKeys, true)
+        val duplicateKeys = findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile1)
         assertEquals(duplicateKeys, mutableMapOf<String, JsonElement>(Pair("var_1", JsonPrimitive("value 1")), Pair("var_2", JsonPrimitive("value 2"))))
     }
 
     @Test
     fun getDuplicateKeysAny() {
-        val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile3, duplicateKeys, true)
+        val duplicateKeys = findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile3)
         assertEquals(duplicateKeys, emptyMap())
     }
 
     @Test
     fun getDuplicateKeysOneElementInCommon() {
-        val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile4, duplicateKeys, true)
+        val duplicateKeys = findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile4)
         assertEquals(duplicateKeys.size, 1)
     }
 
@@ -147,5 +144,94 @@ class MergerTest {
         val duplicateKeys = findCommonKeysBetweenFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
         assertEquals(duplicateKeys.size, 0)
         assertNull(duplicateKeys[sameJsonKey])
+    }
+
+    @Test
+    fun shouldFindOneKeysBetweenThreeDifferentFiles() {
+        val sameJsonKey = "var_1"
+        val sameJsonValue = "value 1"
+        val jsonObject1 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_5", "value 5")
+        }
+        jsonFile1 = JsonFile(UUID.randomUUID(),"test_1", jsonObject1)
+
+        val jsonObject2 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_3", "value 3")
+        }
+        jsonFile2 = JsonFile(UUID.randomUUID(),"test_2", jsonObject2)
+
+        val jsonObject3 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_3", "value 3")
+
+            put("var_4", "value 4")
+        }
+        jsonFile3 = JsonFile(UUID.randomUUID(),   "test_3", jsonObject3)
+        val duplicateKeys = findCommonKeysBetweenFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
+        assertEquals(duplicateKeys.size, 1)
+        assertContains(duplicateKeys, sameJsonKey, sameJsonValue)
+    }
+
+    @Test
+    fun shouldRemoveKeysFromFiles() {
+        val sameJsonKey = "var_1"
+        val sameJsonValue = "value 1"
+        val jsonObject1 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_5", "value 5")
+        }
+        jsonFile1 = JsonFile(UUID.randomUUID(),"test_1", jsonObject1)
+
+        val jsonObject2 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_3", "value 3")
+        }
+        jsonFile2 = JsonFile(UUID.randomUUID(),"test_2", jsonObject2)
+
+        val jsonObject3 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_3", "value 3")
+
+            put("var_4", "value 4")
+        }
+        jsonFile3 = JsonFile(UUID.randomUUID(),   "test_3", jsonObject3)
+        val files = removeKeysFromFiles(listOf(jsonFile1, jsonFile2, jsonFile3), setOf("var_1"))
+        assertEquals(files.find { file -> file.name == jsonFile1.name }?.json?.size, 1)
+        assertEquals(files.find { file -> file.name == jsonFile2.name }?.json?.size, 1)
+        assertEquals(files.find { file -> file.name == jsonFile3.name }?.json?.size, 2)
+    }
+
+    @Test
+    fun shouldRemoveCommonKeysFromFiles() {
+        val sameJsonKey = "var_1"
+        val sameJsonValue = "value 1"
+        val jsonObject1 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_5", "value 5")
+        }
+        jsonFile1 = JsonFile(UUID.randomUUID(),"test_1", jsonObject1)
+
+        val jsonObject2 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_3", "value 3")
+        }
+        jsonFile2 = JsonFile(UUID.randomUUID(),"test_2", jsonObject2)
+
+        val jsonObject3 = buildJsonObject {
+            put(sameJsonKey, sameJsonValue)
+            put("var_3", "value 3")
+
+            put("var_4", "value 4")
+        }
+        jsonFile3 = JsonFile(UUID.randomUUID(),   "test_3", jsonObject3)
+        val postResponse = removeCommonKeysFromFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
+        val files = postResponse.files
+        assertEquals(files.find { file -> file.name == jsonFile1.name }?.json?.size, 1)
+        assertEquals(files.find { file -> file.name == jsonFile2.name }?.json?.size, 1)
+        assertEquals(files.find { file -> file.name == jsonFile3.name }?.json?.size, 2)
+
+        assertEquals(postResponse.mergedFile.json.size, 1)
     }
 }
