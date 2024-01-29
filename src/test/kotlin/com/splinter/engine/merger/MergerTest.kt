@@ -48,27 +48,27 @@ class MergerTest {
     @Test
     fun testGetDuplicateKeys() {
         val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFile1, duplicateKeys, true)
+        findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile1, duplicateKeys, true)
         assertEquals(duplicateKeys, mutableMapOf<String, JsonElement>(Pair("var_1", JsonPrimitive("value 1")), Pair("var_2", JsonPrimitive("value 2"))))
     }
 
     @Test
     fun getDuplicateKeysAny() {
         val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFile3, duplicateKeys, true)
+        findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile3, duplicateKeys, true)
         assertEquals(duplicateKeys, emptyMap())
     }
 
     @Test
     fun getDuplicateKeysOneElementInCommon() {
         val duplicateKeys = mutableMapOf<String, JsonElement>()
-        findExistingKeysBetweenTwoFiles(jsonFile1, jsonFile4, duplicateKeys, true)
+        findCommonKeysBetweenTwoFiles(jsonFile1, jsonFile4, duplicateKeys, true)
         assertEquals(duplicateKeys.size, 1)
     }
 
     @Test
     fun shouldFindTwoDuplicatesKey() {
-        val duplicateKeys = findDuplicateKeysBetweenFiles(listOf(jsonFile1, jsonFile1))
+        val duplicateKeys = findCommonKeysBetweenFiles(listOf(jsonFile1, jsonFile1))
         assertEquals(duplicateKeys.size, 2)
     }
 
@@ -93,7 +93,7 @@ class MergerTest {
             put("var_3", "value 3")
         }
         jsonFile3 = JsonFile(UUID.randomUUID(),   "test_3", jsonObject3)
-        val duplicateKeys = findDuplicateKeysBetweenFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
+        val duplicateKeys = findCommonKeysBetweenFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
         assertEquals(duplicateKeys.size, 0)
     }
 
@@ -118,7 +118,7 @@ class MergerTest {
             put("var_3", "value 3")
         }
         jsonFile3 = JsonFile(UUID.randomUUID(),   "test_3", jsonObject3)
-        val duplicateKeys = findDuplicateKeysBetweenFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
+        val duplicateKeys = findCommonKeysBetweenFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
         assertEquals(duplicateKeys.size, 1)
         assertContains(duplicateKeys, sameJsonKey, sameJsonValue)
     }
@@ -144,7 +144,7 @@ class MergerTest {
             put("var_3", "value 3")
         }
         jsonFile3 = JsonFile(UUID.randomUUID(),   "test_3", jsonObject3)
-        val duplicateKeys = findDuplicateKeysBetweenFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
+        val duplicateKeys = findCommonKeysBetweenFiles(listOf(jsonFile1, jsonFile2, jsonFile3))
         assertEquals(duplicateKeys.size, 0)
         assertNull(duplicateKeys[sameJsonKey])
     }
