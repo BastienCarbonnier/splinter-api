@@ -1,8 +1,11 @@
 import com.splinter.engine.merger.constructResponseFile
 import com.splinter.engine.merger.findCommonKeysBetweenFiles
+import com.splinter.engine.merger.isMergeFileContainAllKeys
 import com.splinter.engine.merger.removeCommonKeysFromFiles
 import com.splinter.engine.parser.decodeJsonFileFromString
 import com.splinter.model.PostRequest
+import com.splinter.model.PostValidationRequest
+import com.splinter.model.PostValidationResponse
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -30,5 +33,12 @@ fun Route.removeAndGetCommonKeysFromFiles() {
     post("/files") {
         val request = call.receive<PostRequest>()
         call.respond(removeCommonKeysFromFiles(request.data))
+    }
+}
+
+fun Route.mergeFileContainAllKeys() {
+    post("/files/validation") {
+        val request = call.receive<PostValidationRequest>()
+        call.respond(PostValidationResponse(isMergeFileContainAllKeys(request.files, request.referenceFile)))
     }
 }

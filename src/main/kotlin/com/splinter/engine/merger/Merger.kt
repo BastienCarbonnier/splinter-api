@@ -52,15 +52,10 @@ fun removeCommonKeysFromFiles(files: List<JsonFile>): PostResponse {
 }
 
 fun removeKeysFromFiles(files: List<JsonFile>, keys: Set<String>): List<JsonFile> {
-    println("removeKeysFromFiles")
-    println(keys.toString())
     var resultFiles = emptyList<JsonFile>()
     files.forEach {
         val json = it.json
         val updatedJson = json.filterKeys { key -> !keys.contains(key) }
-        println("fileName: ${it.name}")
-        println("updatedJson")
-        println(updatedJson.toString())
         val updatedFile = JsonFile(it.id, it.name, JsonObject(updatedJson))
         resultFiles = resultFiles.plus(updatedFile)
     }
@@ -69,4 +64,10 @@ fun removeKeysFromFiles(files: List<JsonFile>, keys: Set<String>): List<JsonFile
 
 fun constructResponseFile(id: UUID, name: String, map: Map<String, JsonElement>): JsonFile {
     return JsonFile(id, name, JsonObject(map))
+}
+
+fun isMergeFileContainAllKeys(jsons: List<JsonObject>, referenceFile: JsonObject): Boolean {
+    var mergedJson = emptyMap<String, JsonElement>()
+    jsons.forEach { json -> mergedJson = mergedJson.plus(json.toMap()) }
+    return mergedJson.toSortedMap() == referenceFile.toSortedMap()
 }
