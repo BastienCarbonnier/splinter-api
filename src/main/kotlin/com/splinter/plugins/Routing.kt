@@ -6,6 +6,7 @@ import getResultingFile
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import mergeFileContainAllKeys
+import removeAndGetCommonKeysFromFilesAll
 
 fun Application.configureRouting() {
     routing {
@@ -13,5 +14,6 @@ fun Application.configureRouting() {
         getDuplicateKeyFromFiles()
         removeAndGetCommonKeysFromFiles()
         mergeFileContainAllKeys()
+        removeAndGetCommonKeysFromFilesAll()
     }
 }

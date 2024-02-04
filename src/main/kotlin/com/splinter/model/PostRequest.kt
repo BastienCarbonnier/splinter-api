@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostRequest(
-    val data: List<JsonFile>
+    val files: List<JsonFile>
 )
