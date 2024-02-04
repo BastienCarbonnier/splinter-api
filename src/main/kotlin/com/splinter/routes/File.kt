@@ -67,10 +67,10 @@ fun Route.removeAndGetCommonKeysFromFilesAll() {
                     if (file.json.isNotEmpty()) {
                         val province = Province.from(getProvinceFromFileName(file.name, brand, lang))
                         if (province != null) {
-                            var provincesForBrand = response.brands[brand]?.provinces?.get(province)
+                            var provincesForBrand = response.brands[brand]?.provinces?.get(province.label)
                             if (provincesForBrand == null) provincesForBrand = ProvinceFiles()
                             provincesForBrand[lang] = file
-                            response.brands[brand]?.provinces?.set(province, provincesForBrand)
+                            response.brands[brand]?.provinces?.set(province.label, provincesForBrand)
                         }
                     }
                 }

@@ -2,7 +2,6 @@ package com.splinter.model
 
 import com.splinter.model.enums.Brand
 import com.splinter.model.enums.Language
-import com.splinter.model.enums.Province
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,7 +20,7 @@ data class PostResponseAllFiles(
 data class BrandFiles (
     var en: JsonFile? = null,
     var fr: JsonFile? = null,
-    var provinces: MutableMap<Province, ProvinceFiles> = mutableMapOf()
+    var provinces: MutableMap<String, ProvinceFiles> = mutableMapOf()
 ) {
     operator fun set(lang: Language, value: JsonFile) {
         if (lang == Language.FRENCH) fr = value
