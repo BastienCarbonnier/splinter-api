@@ -15,6 +15,14 @@ data class PostResponseAllFiles(
         if (lang == LanguageEnum.FRENCH) fr = value
         else if (lang == LanguageEnum.ENGLISH) en = value
     }
+
+    operator fun get(lang: LanguageEnum): JsonFile? {
+        return if (lang == LanguageEnum.FRENCH) {
+            this.fr
+        } else {
+            this.en
+        }
+    }
 }
 
 @Serializable
