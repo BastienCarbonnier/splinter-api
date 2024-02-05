@@ -27,6 +27,14 @@ data class BrandFiles (
         if (lang == LanguageEnum.FRENCH) fr = value
         else if (lang == LanguageEnum.ENGLISH) en = value
     }
+
+    operator fun get(lang: LanguageEnum): JsonFile? {
+        return if (lang == LanguageEnum.FRENCH) {
+            this.fr
+        } else {
+            this.en
+        }
+    }
 }
 
 @Serializable
@@ -37,6 +45,14 @@ data class ProvinceFiles (
     operator fun set(lang: LanguageEnum, value: JsonFile) {
         if (lang == LanguageEnum.FRENCH) fr = value
         else if (lang == LanguageEnum.ENGLISH) en = value
+    }
+
+    operator fun get(lang: LanguageEnum): JsonFile? {
+        return if (lang == LanguageEnum.FRENCH) {
+            this.fr
+        } else {
+            this.en
+        }
     }
 }
 

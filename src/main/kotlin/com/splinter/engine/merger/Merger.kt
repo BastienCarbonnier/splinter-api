@@ -68,9 +68,9 @@ fun constructResponseFile(id: UUID, name: String, map: Map<String, JsonElement>)
     return JsonFile(id, name, JsonObject(map))
 }
 
-fun isMergeFileContainAllKeys(jsons: List<JsonObject>, referenceFile: JsonObject): Boolean {
+fun isMergeFileContainAllKeys(jsons: List<JsonObject?>, referenceFile: JsonObject): Boolean {
     var mergedJson = emptyMap<String, JsonElement>()
-    jsons.forEach { json -> mergedJson = mergedJson.plus(json.toMap()) }
+    jsons.forEach { json -> if (json != null) mergedJson = mergedJson.plus(json.toMap()) }
     return mergedJson.toSortedMap() == referenceFile.toSortedMap()
 }
 
