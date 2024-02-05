@@ -269,7 +269,7 @@ class MergerTest {
         assertEquals(postResponse.en?.json?.size, 1)
         assertEquals(sameJsonValue, getJsonContentForKey(sameJsonKey, postResponse.en?.json))
         assertEquals( 1, belairEnQuebecJson?.size)
-        assertEquals( "value 5", getJsonContentForKey("var_5", belairEnQuebecJson))
+        assertEquals( "value 5", getJsonContentForKey("var_5failed", belairEnQuebecJson))
         assertEquals( 1, belairEnABJson?.size)
         assertEquals( "value 3", getJsonContentForKey("var_3", belairEnABJson))
         assertEquals(2, scotiaEnQuebecJson?.size)
