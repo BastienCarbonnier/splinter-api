@@ -1,12 +1,6 @@
-import com.splinter.engine.merger.constructResponseFile
-import com.splinter.engine.merger.findCommonKeysBetweenFiles
-import com.splinter.engine.merger.isMergeFileContainAllKeys
-import com.splinter.engine.merger.removeCommonKeysFromFiles
+import com.splinter.engine.merger.*
 import com.splinter.engine.parser.decodeJsonFileFromString
 import com.splinter.model.*
-import com.splinter.model.enums.Brand
-import com.splinter.model.enums.Language
-import com.splinter.model.enums.Province
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -44,45 +38,9 @@ fun Route.mergeFileContainAllKeys() {
     }
 }
 
-fun Route.removeAndGetCommonKeysFromFilesAll() {
-    post("/files/all-files") {
+fun Route.removeAndGetCommonKeysFromAllBrandFiles() {
+    post("/files/all-brand-files") {
         val request = call.receive<PostRequest>()
-        val response = PostResponseAllFiles()
-        val allFiles = request.files
-
-        for (lang in Language.entries) {
-            val filteredFilesByLang: List<JsonFile> = allFiles.filter { it.name.contains(lang.label) }
-            val commonKeysByLang = removeCommonKeysFromFiles(filteredFilesByLang)
-            response[lang] = commonKeysByLang.mergedFile
-            for (brand in Brand.entries) {
-                if (response.brands[brand] == null) response.brands[brand] = BrandFiles()
-
-                val filteredFilesByBrand = commonKeysByLang.files.filter { it.name.contains(brand.label) }
-                val commonKeysByBrand = removeCommonKeysFromFiles(filteredFilesByBrand)
-                if (commonKeysByBrand.mergedFile.json.isNotEmpty()) {
-                    response.brands[brand]?.set(lang, commonKeysByBrand.mergedFile)
-                }
-
-                for (file in commonKeysByBrand.files) {
-                    if (file.json.isNotEmpty()) {
-                        val province = Province.from(getProvinceFromFileName(file.name, brand, lang))
-                        if (province != null) {
-                            var provincesForBrand = response.brands[brand]?.provinces?.get(province.label)
-                            if (provincesForBrand == null) provincesForBrand = ProvinceFiles()
-                            provincesForBrand[lang] = file
-                            response.brands[brand]?.provinces?.set(province.label, provincesForBrand)
-                        }
-                    }
-                }
-            }
-        }
-        call.respond(response)
+        call.respond(processAllBrandFiles(request.files))
     }
-}
-
-fun getProvinceFromFileName(name: String, brand: Brand, lang: Language): String {
-    return name.replace(brand.label, "")
-        .replace("${lang.label}_CA", "")
-        .replace("_", "")
-        .replace(".json", "")
 }

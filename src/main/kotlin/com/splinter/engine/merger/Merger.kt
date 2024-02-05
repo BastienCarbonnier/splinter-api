@@ -1,7 +1,9 @@
 package com.splinter.engine.merger
 
-import com.splinter.model.JsonFile
-import com.splinter.model.PostResponse
+import com.splinter.model.*
+import com.splinter.model.enums.BrandEnum
+import com.splinter.model.enums.LanguageEnum
+import com.splinter.model.enums.ProvinceEnum
 import kotlinx.serialization.json.*
 import java.util.*
 
@@ -70,4 +72,36 @@ fun isMergeFileContainAllKeys(jsons: List<JsonObject>, referenceFile: JsonObject
     var mergedJson = emptyMap<String, JsonElement>()
     jsons.forEach { json -> mergedJson = mergedJson.plus(json.toMap()) }
     return mergedJson.toSortedMap() == referenceFile.toSortedMap()
+}
+
+fun processAllBrandFiles(allFiles: List<JsonFile>): PostResponseAllFiles {
+    val response = PostResponseAllFiles()
+
+    for (lang in LanguageEnum.entries) {
+        val filteredFilesByLang: List<JsonFile> = allFiles.filter { it.name.contains(lang.label) }
+        val commonKeysByLang = removeCommonKeysFromFiles(filteredFilesByLang)
+        response[lang] = commonKeysByLang.mergedFile
+        for (brand in BrandEnum.entries) {
+            if (response.brands[brand] == null) response.brands[brand] = BrandFiles()
+
+            val filteredFilesByBrand = commonKeysByLang.files.filter { it.name.contains(brand.label) }
+            val commonKeysByBrand = removeCommonKeysFromFiles(filteredFilesByBrand)
+            if (commonKeysByBrand.mergedFile.json.isNotEmpty()) {
+                response.brands[brand]?.set(lang, commonKeysByBrand.mergedFile)
+            }
+
+            for (file in commonKeysByBrand.files) {
+                if (file.json.isNotEmpty()) {
+                    val province = ProvinceEnum.getProvinceFromFileName(file.name, brand, lang)
+                    if (province != null) {
+                        var provincesForBrand = response.brands[brand]?.provinces?.get(province)
+                        if (provincesForBrand == null) provincesForBrand = ProvinceFiles()
+                        provincesForBrand[lang] = file
+                        response.brands[brand]?.provinces?.set(province, provincesForBrand)
+                    }
+                }
+            }
+        }
+    }
+    return response
 }

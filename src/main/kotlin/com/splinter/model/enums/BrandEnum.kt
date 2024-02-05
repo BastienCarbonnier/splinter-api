@@ -1,6 +1,6 @@
 package com.splinter.model.enums
 
-enum class Brand(val label: String) {
+enum class BrandEnum(val label: String) {
     BELAIR("belair"),
     SCOTIA("scotia"),
     SERVUS("servus"),
