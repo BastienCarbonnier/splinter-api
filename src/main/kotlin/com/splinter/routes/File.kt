@@ -1,5 +1,4 @@
 import com.splinter.engine.merger.*
-import com.splinter.engine.parser.decodeJsonFileFromString
 import com.splinter.model.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -7,13 +6,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.util.*
 
-fun Route.getResultingFile() {
-    get("/") {
-        val s = "{\"name\": \"en_NL.i18n\", \"json\":{\"test_key\":\"test value\",\"test_key_object\":{\"test_key\":\"test value\"}}}"
-        call.respond(decodeJsonFileFromString(s))
-    }
-}
-
+/**
+ * Route to find duplicate key between files
+ */
 fun Route.getDuplicateKeyFromFiles() {
     post("/file") {
         val data = call.receive<PostRequest>()
@@ -24,6 +19,9 @@ fun Route.getDuplicateKeyFromFiles() {
     }
 }
 
+/**
+ * Route to find common keys between a list of files and remove them from original files
+ */
 fun Route.removeAndGetCommonKeysFromFiles() {
     post("/files") {
         val request = call.receive<PostRequest>()
@@ -31,6 +29,9 @@ fun Route.removeAndGetCommonKeysFromFiles() {
     }
 }
 
+/**
+ * Route to validate that a list of files contains all the key/value from a reference file
+ */
 fun Route.mergeFileContainAllKeys() {
     post("/files/validation") {
         val request = call.receive<PostValidationRequest>()
@@ -38,6 +39,9 @@ fun Route.mergeFileContainAllKeys() {
     }
 }
 
+/**
+ * Route to find every common keys by lang, brand, province and return the response file
+ */
 fun Route.removeAndGetCommonKeysFromAllBrandFiles() {
     post("/files/all-brand-files") {
         val request = call.receive<PostRequest>()
